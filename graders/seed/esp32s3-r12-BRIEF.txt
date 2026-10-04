@@ -1,0 +1,51 @@
+# MODULE BRIEF -- esp32s3-r12 (fixture-tier mini-board)
+
+Mission dir: fixtures/board-lab/esp32s3-r12/ (root: /home/lab/workspace/pcb-control/fixtures)
+Binding plan: 2ee2cfb309bea8552dd294db3eb087d74950f0e82e0e11524a142c9f8f217f4a / dispatch pcb-dispatch-r12a-plan1
+
+## 0. Purpose
+Six-module ESP32-S3 breakout: USB-C 5V in -> ME6211 3.3V LDO -> module power/decoupling, one status LED, one 1x4 debug header with UART. Fixtures only; never the real board.
+
+## 1. Netlist (exactly 6 nets)
+- +3V3  : U1.3V3, U2.VOUT, C1.1, C2.1, C3.1, D1.anode, H1.1   (L10: single merged name, no variants)
+- +5V_IN: J1.VBUS, U2.VIN
+- GND   : J1.GND, U2.GND, C1.2, C2.2, C3.2, R1.2? NO -> R1.2 is +3V3 per LED string below.
+  Correction -- GND: J1.GND, U2.GND, C1.2, C2.2, C3.2, D1... see M5 for string orientation.
+- GPIO2 : U1.GPIO2, R1.2
+- GPIO4 : U1.GPIO4, H1.2 (label "TX" = board->host)
+- GPIO5 : U1.GPIO5, H1.3 (label "RX" = host->board)
+Final GND set: J1.GND, U2.GND, C1.2, C2.2, C3.2, H1.4.
+All other U1 pins NC; flash/PSRAM GPIO26-32 MUST remain unconnected. U1.EN tied directly to +3V3 (hard-enable; accepted fixture deviation, flagged for DFM review).
+
+## 2. Modules (6 max -- no extra refs permitted)
+- M1 U1 ESP32-S3-WROOM-1 (module). Power pads 3V3/GND per library footprint; IO used: EN, GPIO2, GPIO4 (UART TX), GPIO5 (UART RX).
+- M2 J1 USB-C receptacle, power-only. Connect VBUS(A4/A9/B4/B5 bussed)->+5V_IN and GND only. CC1/CC2 left NC -- fixture is bench/charger-fed; no PD negotiation. Deviation noted for reviewer.
+- M3 U2 ME6211C33 LDO (SOT-23-3 class). Function pins VIN->+5V_IN, GND->GND, VOUT->+3V3. Pad-number resolution against the project library symbol is the schematic agent's job, verified by gate.
+- M4 Decoupling: C1,C2 100nF 0402 across +3V3/GND placed at U1 3V3 pad(s); C3 10uF 0603 across +3V3/GND at U2 VOUT. ME6211 input cap omitted (fixture simplification, flagged).
+- M5 Status: +3V3 -> D1 anode, D1 cathode -> R1 (1k) -> GPIO2 (sink-driven, active-low lit). GPIO2 is not an S3 strapping pin (straps are 0/3/45/46): safe.
+- M6 H1 1x4 header, 2.54mm pitch: pin1 +3V3, pin2 GPIO4/TX, pin3 GPIO5/RX, pin4 GND.
+
+## 3. Explicit rules -- binding on brief AND every downstream artifact
+- L10 ONE merged power net named +3V3 for every 3.3V pad. Forbidden: +3V3A, 3V3_D, VDD_3V3, duplicate 3.3V names. Net-name scan of sch+pcb must find exactly "+3V3".
+- L11 Every footprint pad pitch AND courtyard gap >= 0.25mm (class clearance 0.2mm + 0.05 margin). 0402 pads 1.0x0.5mm, rot-aware: clearance check applies after per-ref rotation. U1 side pads on >=1.5mm vertical grid rows.
+- L16 Netlist uses KiCad schematic global-label grammar: every connection is a wire terminating in a label whose text equals the net name, placed at each pin. No hierarchical/local-only labels, no net-naming-by-wire.
+- L1 pos.csv refs == bom.csv refs exactly (same set, same strings): {U1,U2,J1,H1,C1,C2,C3,D1,R1} -- 10 refs, no suffix drift, no extra/missing.
+- Placement grid: 0.5mm snap for all component origins.
+
+## 4. Artifact contract (mission dir)
+- esp32s3-r12.kicad_sch -- 10 symbols, nets per section 1, grammar per L16.
+- esp32s3-r12.kicad_pcb -- footprints from project lib; courtyard clearances per L11; board outline suggestion <= 55x35mm (target, non-binding).
+- bom.csv / pos.csv -- per L1; pos.csv includes rotation column (feeds L11 rot-aware check).
+- reports/ -- gate evidence JSON from tools/gate_runner.py.
+
+## 5. Acceptance gates (deterministic, tools/gate_runner.py evidence only)
+- g-net: parsed sch netlist == section 1 set exactly; net count == 6.
+- g-l10: regex scan for 3.3V-name variants in sch+pcb yields zero hits outside "+3V3".
+- g-l11: pad-pitch/courtyard matrix min gap >= 0.25mm; 0402 pad geom 1.0x0.5 present; U1 side-pad row pitch >= 1.5mm.
+- g-l16: every net pin has wire+label; zero label-less pin wires.
+- g-pos: set(bom.refs) == set(pos.refs), len == 10.
+- g-grid: all placement origins on 0.5mm grid.
+Fail on any gate -> revert to last checkpoint; 3 design-fails on same gate -> ESCALATE with options menu.
+
+## 6. Out of scope
+Antenna keepout tuning, ESD parts, USB data lines, battery/charge, strapping-button circuits, any board outside fixtures/.
