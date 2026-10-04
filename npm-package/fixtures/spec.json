@@ -1,0 +1,129 @@
+{
+ "schema_version": "1.0",
+ "board": {
+  "name": "toy-m2",
+  "_provenance": "TOY-FIXTURE netlist from esp32s3-r12-BRIEF.txt + architect corrections (7 nets/9 refs). U1 pin-pad function mapping = FIXTURE CONVENTION (toy GPIOs on pads 4/5/9), NOT silicon pinout \u2014 HUMAN VERIFICATION REQUIRED before any real-order use. | C1/C2 0603 deviation per pad-corridor DRC class",
+  "project": "board-lab toy M2 full-cycle"
+ },
+ "components": [
+  {
+   "ref": "U1",
+   "mpn": "ESP32-S3-WROOM-1-N8R8",
+   "footprint": "RF_Module:ESP32-S3-WROOM-1",
+   "pins": {
+    "1": "GND",
+    "2": "+3V3",
+    "3": "+3V3",
+    "4": "GPIO4",
+    "5": "GPIO5",
+    "9": "GPIO2",
+    "21": "GND",
+    "6": "NC(pin unused)",
+    "7": "NC(pin unused)",
+    "8": "NC(pin unused)",
+    "10": "NC(pin unused)",
+    "11": "NC(pin unused)",
+    "12": "NC(pin unused)",
+    "13": "NC(pin unused)",
+    "14": "NC(pin unused)",
+    "15": "NC(pin unused)",
+    "16": "NC(pin unused)",
+    "17": "NC(pin unused)",
+    "18": "NC(pin unused)",
+    "19": "NC(pin unused)",
+    "20": "NC(pin unused)"
+   }
+  },
+  {
+   "ref": "U2",
+   "mpn": "ME6211C33",
+   "footprint": "Package_TO_SOT_SMD:SOT-23",
+   "pins": {
+    "1": "+5V_IN",
+    "2": "GND",
+    "3": "+3V3"
+   }
+  },
+  {
+   "ref": "J1",
+   "mpn": "USB4110",
+   "footprint": "Connector_USB:USB_C_Receptacle_GCT_USB4110",
+   "pins": {
+    "1": "GND",
+    "2": "NC(pin unused)",
+    "3": "NC(pin unused)",
+    "4": "+5V_IN",
+    "5": "NC(pin unused)",
+    "6": "+5V_IN",
+    "7": "NC(pin unused)",
+    "8": "GND",
+    "9": "GND",
+    "10": "NC(pin unused)",
+    "11": "NC(pin unused)",
+    "12": "NC(pin unused)",
+    "13": "NC(pin unused)",
+    "14": "NC(pin unused)",
+    "15": "NC(pin unused)",
+    "16": "GND"
+   }
+  },
+  {
+   "ref": "H1",
+   "mpn": "HDR1x4",
+   "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+   "pins": {
+    "1": "+3V3",
+    "2": "GPIO4",
+    "3": "GPIO5",
+    "4": "GND"
+   }
+  },
+  {
+   "ref": "C1",
+   "mpn": "100nF",
+   "footprint": "Capacitor_SMD:C_0603_1608Metric",
+   "pins": {
+    "1": "+3V3",
+    "2": "GND"
+   },
+   "_dev": "0402->0603: pad-pair corridor (0.36mm) admits no 0.2mm track w/ 0.2 clr; fixture deviation logged"
+  },
+  {
+   "ref": "C2",
+   "mpn": "100nF",
+   "footprint": "Capacitor_SMD:C_0603_1608Metric",
+   "pins": {
+    "1": "+3V3",
+    "2": "GND"
+   },
+   "_dev": "0402->0603: pad-pair corridor (0.36mm) admits no 0.2mm track w/ 0.2 clr; fixture deviation logged"
+  },
+  {
+   "ref": "C3",
+   "mpn": "10uF",
+   "footprint": "Capacitor_SMD:C_0603_1608Metric",
+   "pins": {
+    "1": "+3V3",
+    "2": "GND"
+   }
+  },
+  {
+   "ref": "D1",
+   "mpn": "LED",
+   "footprint": "LED_SMD:LED_0603_1608Metric",
+   "pins": {
+    "1": "+3V3",
+    "2": "LED1"
+   }
+  },
+  {
+   "ref": "R1",
+   "mpn": "1k",
+   "footprint": "Resistor_SMD:R_0603_1608Metric",
+   "pins": {
+    "1": "LED1",
+    "2": "GPIO2"
+   }
+  }
+ ]
+}

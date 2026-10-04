@@ -1,0 +1,12 @@
+{
+  "name": "pcb-maker",
+  "version": "0.1.0",
+  "description": "PCB设计智能体家族的开源考卷与尺子：角色说明、分阶段考题、KiCad独立评分器。你的 agent 环境都能挂同一台考官。",
+  "type": "module",
+  "bin": { "pcb-maker-grade": "grader.mjs" },
+  "files": ["grader.mjs", "agents/", "scenarios/", "fixtures/", "README.md"],
+  "engines": { "node": ">=20" },
+  "keywords": ["pcb", "kicad", "agents", "benchmark", "evaluation"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/TachikomaGundam/PCB-Maker.git" }
+}
