@@ -1,0 +1,48 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for npm Trusted Publishing (OIDC provenance)
+
+jobs:
+  publish:
+    name: Publish pcb-maker to npm
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: npm-package
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Node 24 ships npm >= 11.5.1 — the minimum that supports Trusted
+          # Publishing. Deliberately NO registry-url: it would inject
+          # NODE_AUTH_TOKEN and defeat OIDC (documented pitfall).
+          node-version: 24
+
+      - name: Enforce tag == package.json version
+        env:
+          GH_REF: ${{ github.ref }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ "${GH_EVENT}" = "workflow_dispatch" ]; then
+            echo "::warning::manual dispatch — npm-side trusted-publisher event config remains the real gate"
+          else
+            TAG="$(git describe --tags --exact-match HEAD)"
+            VERSION="$(node -p "require('./package.json').version")"
+            if [ "${TAG#v}" != "${VERSION}" ]; then
+              echo "::error::git tag '${TAG}' does not match package.json version '${VERSION}'"
+              exit 1
+            fi
+            echo "Publishing ${VERSION} (tag ${TAG})"
+          fi
+
+      - run: npm publish --provenance --access public
