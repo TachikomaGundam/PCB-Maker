@@ -1,0 +1,32 @@
+{
+  "name": "pcb-maker",
+  "version": "0.1.1",
+  "description": "PCB\u8bbe\u8ba1\u667a\u80fd\u4f53\u5bb6\u65cf\u7684\u5f00\u6e90\u8003\u5377\u4e0e\u5c3a\u5b50\uff1a\u89d2\u8272\u8bf4\u660e\u3001\u5206\u9636\u6bb5\u8003\u9898\u3001KiCad\u72ec\u7acb\u8bc4\u5206\u5668\u3002\u4f60\u7684 agent \u73af\u5883\u90fd\u80fd\u6302\u540c\u4e00\u53f0\u8003\u5b98\u3002",
+  "type": "module",
+  "bin": {
+    "pcb-maker-grade": "grader.mjs"
+  },
+  "files": [
+    "grader.mjs",
+    "agents/",
+    "scenarios/",
+    "fixtures/",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "pcb",
+    "kicad",
+    "agents",
+    "benchmark",
+    "evaluation"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TachikomaGundam/PCB-Maker.git"
+  }
+}
